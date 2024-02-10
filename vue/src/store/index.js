@@ -22,6 +22,11 @@ const store = createStore({
         return data;
       });
     },
+    createTask({ commit }, task) {
+      return axiosClient.post("/createTask", task).then(({ data }) => {
+        return data;
+      });
+    },
   },
   mutations: {
     setUser: (state, userData) => {

@@ -1,15 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
+import Tasks from "../views/Tasks.vue";
+import CreateTask from "../views/CreateTask.vue";
 import Login from "../views/LoginRegister/Login.vue";
 import Register from "../views/LoginRegister/Register.vue";
 import store from "@/store";
+import DefaultLayout from "../components/DefaultLayout.vue";
 
 const routes = [
   {
     path: "/",
     name: "home",
+    redirect: { name: "tasks" },
     meta: { isAuthenticated: true },
-    component: Home,
+    component: DefaultLayout,
+    children: [
+      { path: "/tasks", name: "tasks", component: Tasks },
+      { path: "/tasks/create", name: "createTask", component: CreateTask },
+    ],
   },
   {
     path: "/auth",
