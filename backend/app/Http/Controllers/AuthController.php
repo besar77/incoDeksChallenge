@@ -13,16 +13,20 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|email|string|unique:users,email',
              'password' => [
                 'required',
                 'confirmed',
-                Password::min(8)->mixedCase()->numbers()->symbols()
+                // Password::min(8)->mixedCase()->numbers()->symbols()
              ]
         ]);
 
+        // return $request->all();
+
         $user = User::create([
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password'])
         ]);
