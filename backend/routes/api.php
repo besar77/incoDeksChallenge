@@ -25,3 +25,4 @@ Route::post('/login',[AuthController::class,'login']);
 
 Route::get('/getAllUsers',[TaskController::class,'getAllUsers']);
 Route::post('/createTask',[TaskController::class,'createTask']);
+Route::get('/allTasks',[TaskController::class,'getAllTasks']);

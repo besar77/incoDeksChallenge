@@ -29,7 +29,7 @@ class TaskController extends Controller
 
     public function getAllTasks()
     {
-        $allTasks = Task::all();
+        $allTasks = Task::with('user')->get();
         return response([
             'allTasks' => $allTasks
         ]);

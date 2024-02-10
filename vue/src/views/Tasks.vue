@@ -16,15 +16,82 @@
   </header>
   <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-      Main content
-      <slot></slot>
+      <KanbanComponent
+        id="kanban"
+        :dataSource="allTasks"
+        keyField="Status"
+        :cardSettings="cardSettings"
+        :swimlaneSettings="swimLaneSettings"
+      >
+        <ColumnsDirective>
+          <ColumnDirective
+            headerText="Pending"
+            keyField="pending"
+          ></ColumnDirective>
+          <ColumnDirective
+            headerText="Completed"
+            keyField="completed"
+          ></ColumnDirective>
+        </ColumnsDirective>
+      </KanbanComponent>
     </div>
   </main>
 </template>
 
 <script setup>
+import axiosClient from "@/axios";
 import store from "@/store";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { KanbanPlugin } from "@syncfusion/ej2-vue-kanban";
+import {
+  KanbanComponent,
+  ColumnsDirective,
+  ColumnDirective,
+} from "@syncfusion/ej2-vue-kanban";
+
+const cardSettings = {
+  contentField: "Summary",
+  headerField: "Id",
+};
+
+const swimLaneSettings = {
+  keyField: "Assignee",
+};
+
+const allTasks = ref([]);
+
+function transformTasks(originalTasks) {
+  return originalTasks.map((task) => ({
+    Id: task.id,
+    Status: task.status,
+    Summary: task.name,
+    Description: task.description,
+    EndDate: task.due_date,
+    UserId: task.user_id,
+    Assignee: task.user.name,
+  }));
+}
+
+onMounted(async () => {
+  try {
+    const tasks = await fetchAllTasks();
+    allTasks.value = transformTasks(tasks.data.allTasks);
+    console.log(allTasks.value);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+const fetchAllTasks = async () => {
+  try {
+    const allTasks = await axiosClient.get("/allTasks");
+    return allTasks;
+  } catch (err) {
+    console.log(err);
+  }
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+@import "@syncfusion/ej2-bootstrap5-theme/styles/bootstrap5.css";
+</style>
