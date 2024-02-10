@@ -22,6 +22,7 @@
         keyField="Status"
         :cardSettings="cardSettings"
         :swimlaneSettings="swimLaneSettings"
+        @cardClick="handleCardClick"
       >
         <ColumnsDirective>
           <ColumnDirective
@@ -42,12 +43,14 @@
 import axiosClient from "@/axios";
 import store from "@/store";
 import { computed, onMounted, ref } from "vue";
-import { KanbanPlugin } from "@syncfusion/ej2-vue-kanban";
 import {
   KanbanComponent,
   ColumnsDirective,
   ColumnDirective,
 } from "@syncfusion/ej2-vue-kanban";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const cardSettings = {
   contentField: "Summary",
@@ -89,6 +92,14 @@ const fetchAllTasks = async () => {
   } catch (err) {
     console.log(err);
   }
+};
+
+const handleCardClick = (args) => {
+  const taskId = args.data.Id;
+  router.push({
+    name: "deleteUpdateTask",
+    params: { id: taskId },
+  });
 };
 </script>
 

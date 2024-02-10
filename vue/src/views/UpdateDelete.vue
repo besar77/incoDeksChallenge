@@ -1,14 +1,23 @@
 <template>
   <header class="bg-white shadow">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold tracking-tight text-gray-900">
-        Create Task
-      </h1>
+      <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900">
+          Update or Delete Task
+        </h1>
+        <button
+          type="button"
+          @click="deleteTask"
+          class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   </header>
   <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-      <form @submit="createTask">
+      <form @submit="update">
         <div class="space-y-12">
           <div class="border-b border-gray-900/10 pb-12">
             <h2 class="text-base font-semibold leading-7 text-gray-900">
@@ -28,8 +37,8 @@
                     name="name"
                     id="name"
                     required
-                    autocomplete="given-name"
                     v-model="task.name"
+                    autocomplete="given-name"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -40,20 +49,22 @@
                   <label
                     for="user"
                     class="block text-sm font-medium leading-6 text-gray-900"
-                    >Select User</label
                   >
+                    Select User
+                  </label>
                   <select
-                    v-model="task.user_id"
                     id="user"
                     name="user"
                     required
                     autocomplete="user-name"
+                    v-model="task.user_id"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   >
                     <option
                       v-for="user in allUsers"
                       :key="user.id"
                       :value="user.id"
+                      :selected="user.id === task.user_id"
                     >
                       {{ user.name }}
                     </option>
@@ -72,9 +83,9 @@
                     id="description"
                     name="description"
                     rows="4"
-                    v-model="task.description"
                     class="block p-2.5 w-full text-sm text-black-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:border-black-100 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Write your thoughts here..."
+                    v-model="task.description"
                   ></textarea>
                 </div>
               </div>
@@ -101,14 +112,15 @@
                 <label
                   for="status"
                   class="block text-sm font-medium leading-6 text-gray-900"
-                  >Status</label
                 >
+                  Status
+                </label>
                 <div class="mt-2">
                   <select
                     id="status"
                     name="status"
-                    autocomplete="user-name"
                     v-model="task.status"
+                    autocomplete="user-name"
                     required
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   >
@@ -133,52 +145,45 @@
     </div>
   </main>
 </template>
-
 <script setup>
+import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
 import axiosClient from "@/axios";
 import store from "@/store";
-import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const allUsers = ref([]);
-const selectedUser = ref(null);
+const route = useRoute();
 
-const task = ref({
-  name: "",
-  user_id: null,
-  description: "",
-  due_date: "",
-  status: "",
-});
+const allUsers = ref([]);
+const task = ref({});
 
 onMounted(async () => {
   try {
-    const users = await fetchAllUsers();
-    // console.log(users);
-    allUsers.value = users.allUsers;
-    console.log(allUsers.value);
+    const res = await fetchTaskAndUsers();
+    allUsers.value = res.data.allUsers;
+    task.value = res.data.task;
+    console.log(res.data.task);
   } catch (err) {
     console.log(err);
   }
 });
 
-const fetchAllUsers = async () => {
+const fetchTaskAndUsers = async () => {
   try {
-    const users = await axiosClient.get("/getAllUsers");
-    return users.data;
+    const res = await axiosClient.get(`/getTask/${route.params.id}`);
+    return res;
   } catch (err) {
     console.log(err);
   }
 };
 
-function createTask(e) {
+function update(e) {
   e.preventDefault();
-
-  const { user_id, name, description, due_date, status } = task.value;
-
+  const { id, user_id, name, description, due_date, status } = task.value;
   const taskData = {
+    id,
     user_id,
     name,
     description,
@@ -186,14 +191,20 @@ function createTask(e) {
     status,
   };
 
-  store
-    .dispatch("createTask", taskData)
-    .then((res) => {
-      router.push({ name: "home" });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  //   console.log(taskData.id);
+
+  store.dispatch("updateTask", taskData).then((res) => {
+    window.location.reload();
+  });
+}
+
+function deleteTask(e) {
+  e.preventDefault();
+  const id = route.params.id;
+
+  store.dispatch("deleteTask", id).then(() => {
+    router.push({ name: "home" });
+  });
 }
 </script>
 

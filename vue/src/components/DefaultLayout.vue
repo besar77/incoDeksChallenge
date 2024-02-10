@@ -38,11 +38,7 @@
                   >
                     <span class="absolute -inset-1.5" />
                     <span class="sr-only">Open user menu</span>
-                    <img
-                      class="h-8 w-8 rounded-full"
-                      :src="user.imageUrl"
-                      alt=""
-                    />
+                    <img class="h-8 w-8 rounded-full" alt="" :src="UserImg" />
                   </MenuButton>
                 </div>
                 <transition
@@ -107,7 +103,7 @@
         <div class="border-t border-gray-700 pb-3 pt-4">
           <div class="flex items-center px-5">
             <div class="flex-shrink-0">
-              <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
+              <img class="h-10 w-10 rounded-full" alt="" />
             </div>
             <div class="ml-3">
               <div class="text-base font-medium leading-none text-white">
@@ -149,6 +145,8 @@ import {
 } from "@headlessui/vue";
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { useRouter } from "vue-router";
+
+import UserImg from "../assets/images/imgUser.jpg";
 
 //user data
 const store = useStore();

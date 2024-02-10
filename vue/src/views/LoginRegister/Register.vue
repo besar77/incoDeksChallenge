@@ -156,8 +156,8 @@ function register(e) {
   store
     .dispatch("register", user.value)
     .then((res) => {
-      // router.push({ name: "home" });
-      console.log("JHemi ne pike");
+      router.push({ name: "home" });
+      // console.log("JHemi ne pike");
     })
     .catch((error) => {
       console.error("Registration error:", error);

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Tasks from "../views/Tasks.vue";
+import UpdateDelete from "../views/UpdateDelete.vue";
 import CreateTask from "../views/CreateTask.vue";
 import Login from "../views/LoginRegister/Login.vue";
 import Register from "../views/LoginRegister/Register.vue";
@@ -15,6 +16,7 @@ const routes = [
     component: DefaultLayout,
     children: [
       { path: "/tasks", name: "tasks", component: Tasks },
+      { path: "/tasks/:id", name: "deleteUpdateTask", component: UpdateDelete },
       { path: "/tasks/create", name: "createTask", component: CreateTask },
     ],
   },
@@ -44,10 +46,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.isAuthenticated && !store.state.user.token) {
+  const isAuthenticated = store.state.user.token;
+
+  if (to.meta.isAuthenticated && !isAuthenticated) {
     next({ name: "login" });
   } else if (store.state.user.token && to.meta.isGuest) {
-    next({ name: "home" });
+    next({ name: "tasks" });
   } else {
     next();
   }

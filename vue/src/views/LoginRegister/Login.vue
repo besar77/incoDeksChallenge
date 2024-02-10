@@ -95,7 +95,10 @@ function login(e) {
   store
     .dispatch("login", user.value)
     .then((res) => {
-      router.push({ name: "Home" });
+      if (res.token) {
+        console.log("Hey", res.token);
+        router.push({ name: "home" });
+      }
     })
     .catch((err) => {
       console.log(err);
