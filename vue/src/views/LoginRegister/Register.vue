@@ -111,6 +111,12 @@
           </div>
         </div>
 
+        <div v-if="errorMsg">
+          <p class="bg-red-500 text-white py-3 text-center rounded-md">
+            {{ errorMsg }}
+          </p>
+        </div>
+
         <div>
           <button
             type="submit"
@@ -141,6 +147,7 @@ import store from "@/store";
 import { ref } from "vue";
 
 const router = useRouter();
+const errorMsg = ref("");
 
 const user = ref({
   name: "",
@@ -157,10 +164,11 @@ function register(e) {
     .dispatch("register", user.value)
     .then((res) => {
       router.push({ name: "home" });
-      // console.log("JHemi ne pike");
+      console.log(res);
     })
     .catch((error) => {
-      console.error("Registration error:", error);
+      console.log(error.response.data.message);
+      errorMsg.value = error.response.data.message;
     });
 }
 </script>

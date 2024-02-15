@@ -163,5 +163,8 @@ function logout() {
   });
 }
 
-const navigation = [{ name: "Tasks", to: { name: "tasks" } }];
+const navigation = [
+  { name: "Tasks", to: { name: "tasks" } },
+  { name: "myTasks", to: { name: "myTasks" } },
+];
 </script>

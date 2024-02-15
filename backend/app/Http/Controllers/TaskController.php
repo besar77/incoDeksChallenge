@@ -63,4 +63,18 @@ class TaskController extends Controller
         }
     }
 
+    public function getMyTask(string $id){
+        $myTasks = Task::with('user')->where('user_id',$id)->get();
+        return response([
+            'myTasks' => $myTasks
+        ]);
+    }
+
+    public function searchTask(Request $request){
+        $data = $request->searchedTitle;
+
+        $result = Task::where('name','like',''.$data.'%')
+            ->get();
+    }
+
 }

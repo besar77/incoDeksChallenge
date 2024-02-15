@@ -19,6 +19,8 @@ return new class extends Migration
             $table->dateTime('due_date');
             $table->enum('status', ['completed', 'pending']);
             $table->timestamps();
+
+            $table->index('name');
         });
     }
 

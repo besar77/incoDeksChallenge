@@ -6,6 +6,7 @@ import Login from "../views/LoginRegister/Login.vue";
 import Register from "../views/LoginRegister/Register.vue";
 import store from "@/store";
 import DefaultLayout from "../components/DefaultLayout.vue";
+import Mytasks from "../views/MyTasks.vue";
 
 const routes = [
   {
@@ -18,6 +19,7 @@ const routes = [
       { path: "/tasks", name: "tasks", component: Tasks },
       { path: "/tasks/:id", name: "deleteUpdateTask", component: UpdateDelete },
       { path: "/tasks/create", name: "createTask", component: CreateTask },
+      { path: "/myTasks", name: "myTasks", component: Mytasks },
     ],
   },
   {

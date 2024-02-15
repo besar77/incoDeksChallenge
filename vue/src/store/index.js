@@ -4,7 +4,7 @@ import { createStore } from "vuex";
 const store = createStore({
   state: {
     user: {
-      data: {},
+      data: localStorage.getItem("user"),
       token: sessionStorage.getItem("TOKEN"),
     },
     task: {},
@@ -64,9 +64,12 @@ const store = createStore({
       state.user.token = null;
     },
     setUser: (state, userData) => {
+      // console.log("We are on set User", userData);
       sessionStorage.setItem("TOKEN", userData.token);
       state.user.token = userData.token;
       state.user.data = userData.data;
+      // localStorage.setItem("user", userData);
+      localStorage.setItem("user", JSON.stringify(userData));
     },
     setToken: (state, token) => {
       state.user.token = token;
